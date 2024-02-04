@@ -11,7 +11,6 @@ import ru.itmentor.spring.boot_security.demo.dao.UserDao;
 import ru.itmentor.spring.boot_security.demo.dao.UserDaoImp;
 
 import ru.itmentor.spring.boot_security.demo.model.User;
-import ru.itmentor.spring.boot_security.demo.model.UserDetailsImpl;
 
 import java.util.List;
 
@@ -22,6 +21,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDaoImp;  //заменил на файнал
+
+    private RoleDao roleDao;
 
     @Autowired
     public UserServiceImpl(UserDaoImp userDaoImp) {
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameNotFoundException("User not found");
          }
 
-         return new UserDetailsImpl(user);
+         return user;
     }
 
 
