@@ -114,7 +114,7 @@ public class User implements UserDetails, Serializable {
         this.roles = roles;
     }
 
-    // !это я пытаюсь реализовать методы интерфейса UserDetails
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();

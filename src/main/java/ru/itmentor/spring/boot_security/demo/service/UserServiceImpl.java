@@ -8,9 +8,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.itmentor.spring.boot_security.demo.dao.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.dao.UserRepository;
-import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 
 import java.util.*;
