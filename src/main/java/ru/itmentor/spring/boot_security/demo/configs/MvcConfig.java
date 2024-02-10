@@ -9,6 +9,6 @@ public class MvcConfig implements WebMvcConfigurer {  //ViewControllerRegistry �
     // автоматизированные контроллеры, предварительно сконфигурированные с кодом состояния и/или представлением.
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/user").setViewName("user");
-        registry.addViewController("/admin").setViewName("admin");
+
     }
 }

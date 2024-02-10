@@ -1,26 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Spring Security Example</title>
 </head>
 <body>
 <h1>Welcome to Index PAGE!</h1>
-
-<!--<sec:authorize access="isAuthenticated()">-->
-<!--    <% response.sendRedirect("/admin"); %>-->
-<!--</sec:authorize>-->
-<div>
-    <form >
-        <h2>Вход в систему</h2>
-        <div>
-            <input name="username" type="text" placeholder="Username"
-                   autofocus="true"/>
-            <input name="password" type="password" placeholder="Password"/>
-            <button type="submit">Log In</button>
-        </div>
-    </form>
-    </form>
-</div>
+<br/>
+<a href="/login">login</a>
 
 </body>
 </html>

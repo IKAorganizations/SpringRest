@@ -4,69 +4,76 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itmentor.spring.boot_security.demo.dao.RoleDao;
-import ru.itmentor.spring.boot_security.demo.dao.UserDao;
-import ru.itmentor.spring.boot_security.demo.dao.UserDaoImp;
 
+import ru.itmentor.spring.boot_security.demo.dao.RoleRepository;
+import ru.itmentor.spring.boot_security.demo.dao.UserRepository;
+import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 
-import java.util.List;
-
+import java.util.*;
 
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserDetailsService {
 
-    private final UserDao userDaoImp;  //заменил на файнал
-
-    private RoleDao roleDao;
+    private final UserRepository userRepository;  //заменил на файнал
 
     @Autowired
-    public UserServiceImpl(UserDaoImp userDaoImp) {
-        this.userDaoImp = userDaoImp;
+    private RoleService roleService;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
-
-    public List<User> findAll() {
-        return userDaoImp.findAll();
-    }
-
-    public User findOne(int id) {
-        return userDaoImp.findOne(id);
-    }
-
-    @Transactional
-    public void save(User user) {
-        userDaoImp.save(user);
-
-    }
-
-    @Transactional
-    public User update(User updatedUser) {
-        return userDaoImp.update(updatedUser);
-    }
-
-    @Transactional
-    public void delete(int id) {
-        userDaoImp.delete(id);
-    }
-
-    // имплементация второго интерфейса
-
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-         User user = userDaoImp.findByUsername(username);
+        User user = userRepository.findByUsername(username);
 
-         if (user == null) {
+        if (user==null)
             throw new UsernameNotFoundException("User not found");
-         }
 
-         return user;
+        return user;
     }
+
+
+    public List<User> allUsers () {
+        return userRepository.findAll();
+    }
+
+
+    public User findUserById (Long id) {
+       Optional<User> user =  userRepository.findById(id);
+
+       return user.orElse(new User());
+    }
+
+    @Transactional
+    public void saveUser(User user) {
+        userRepository.save(user);
+
+        user.setPassword(NoOpPasswordEncoder.getInstance().encode(user.getPassword()));
+    }
+
+
+    @Transactional
+    public void deleteUser (Long id) {
+       userRepository.deleteById(id);
+
+    }
+
+
+    @Transactional
+    public void update (Long id, User updateuser) {
+        updateuser.setId(id);
+        userRepository.save(updateuser);
+    }
+
 
 
 }

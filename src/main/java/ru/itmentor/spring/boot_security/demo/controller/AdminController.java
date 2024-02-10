@@ -4,80 +4,88 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.service.RoleService;
-import ru.itmentor.spring.boot_security.demo.service.UserService;
+import ru.itmentor.spring.boot_security.demo.service.UserServiceImpl;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 
 @Controller
 @RequestMapping ("/admin")
 public class AdminController {
 
-    private final UserService userServiceImpl; //заменил на файнал   ?? - расширил  класс, но здесь нет реализации метода loadByUsername
+    private  final UserServiceImpl userServiceImpl;
 
     private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserService userServiceImpl, RoleService roleService) {
+    public AdminController(UserServiceImpl userServiceImpl, RoleService roleService) {
         this.userServiceImpl = userServiceImpl;
         this.roleService = roleService;
     }
 
     @GetMapping
     public String allUsers (Model model) {
-        model.addAttribute("users", userServiceImpl.findAll());
-        return "users/index";
+        model.addAttribute("users", userServiceImpl.allUsers());
+        return "allUsers";
+    }
+
+    @DeleteMapping("allUsers/{id}/delete")
+    public String deleteUser(@PathVariable("id") Long id) {
+        userServiceImpl.deleteUser(id);
+
+        return "redirect:/admin";
     }
 
     @GetMapping("/{id}" )
-    public String show (@PathVariable("id") int id, Model model){
-        model.addAttribute("user", userServiceImpl.findOne(id));
-        return "users/show";
+    public String show (@PathVariable("id") Long id, Model model){
+        model.addAttribute("user", userServiceImpl.findUserById(id));
+        return "show";
     }
+
 
     @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "users/new";
+    public String newUser(Model model) {
+
+        Set<Role> setRoles = roleService.getAllRoles();
+        model.addAttribute("setRoles", setRoles);
+        model.addAttribute("user", new User());
+
+        return "new";
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     public String create(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return "users/new";
+            return "new";
 
-        if(roleService.getRolesList().contains(user.getRoles())){  //!возможно стоит перенести в ДАО
-            userServiceImpl.save(user);
-        } else {
-            System.out.println("Role not found");
-        }
-
-         return "redirect:/users";
+        userServiceImpl.saveUser(user);
+        return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id){
-        model.addAttribute("user", userServiceImpl.findOne(id));
 
-        return "users/edit";
+    @GetMapping("allUsers/{id}/edit")
+    public String edit(Model model, @PathVariable("id") Long id){
+        Set<Role> setRoles = roleService.getAllRoles();
+        model.addAttribute("setRoles", setRoles);
+        model.addAttribute("user", userServiceImpl.findUserById(id));
+
+        return "edit";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("allUsers/{id}")
     public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                         @PathVariable("id") int id) {
+                         @PathVariable("id") Long id) {
         if (bindingResult.hasErrors())
-            return "users/edit";
+            return "edit";
 
-        userServiceImpl.update(user);
-        return "redirect:/users";
+        userServiceImpl.update(id, user);
+        return "redirect:/admin";
     }
 
 
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
-        userServiceImpl.delete(id);
-        return "redirect:/users";
-    }
 }

@@ -9,22 +9,23 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "people")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotEmpty(message = "Name should not be empty")
     @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
-    @Column(name = "name")
-    private String name;
+    @Column(name = "username")
+    private String username;
 
     @Min(value = 0, message = "Age should be greater than 0")
     @Column(name = "age")
@@ -35,14 +36,13 @@ public class User implements UserDetails {
     @Email
     private String email;
 
-
-    @Column(name = "userPassword")
-    private String userPassword;
+    @Column(name = "password")
+    private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Column(name = "roles")
     @JoinTable(
-            name = "myRoles_people",
+            name = "myroles_people",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn ( name = "role_id", referencedColumnName = "id"))
@@ -52,25 +52,34 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, Integer age, String email) {
-        this.name = name;
+    public User(String username, Integer age, String email) {
+        this.username = username;
         this.age = age;
     }
 
-    public User(String name, Integer age, String email, String userPassword, Set<Role> roles) {
-        this.name = name;
+    public User(String username, Integer age, String email, String password, Set<Role> roles) {
+        this.username = username;
         this.age = age;
         this.email = email;
-        this.userPassword = userPassword;
+        this.password = password;
         this.roles = roles;
     }
 
-    public String getName() {
-        return name;
+
+    public void setId(Long id){
+        this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Long getId () {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     public int getAge() {
@@ -89,20 +98,12 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String userPassword) {
+        this.password = userPassword;
     }
 
     public Set<Role> getRoles() {
@@ -119,15 +120,6 @@ public class User implements UserDetails {
         return getRoles();
     }
 
-    @Override
-    public String getPassword() {
-        return getUserPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return getName();
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -152,11 +144,10 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
+        return  "id=" + id +
+                ", name='" + username + '\'' +
+                ", age=" + age;
     }
+
 
 }
