@@ -16,12 +16,9 @@ import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepository userRepository;  //заменил на файнал
-
-    @Autowired
-    private RoleService roleService;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -39,17 +36,17 @@ public class UserServiceImpl implements UserDetailsService {
         return user;
     }
 
-
     public List<User> allUsers () {
         return userRepository.findAll();
     }
 
 
     public User findUserById (Long id) {
-       Optional<User> user =  userRepository.findById(id);
+       Optional<User> user = userRepository.findById(id);
 
        return user.orElse(new User());
     }
+
 
     @Transactional
     public void saveUser(User user) {
@@ -58,13 +55,11 @@ public class UserServiceImpl implements UserDetailsService {
         user.setPassword(NoOpPasswordEncoder.getInstance().encode(user.getPassword()));
     }
 
-
     @Transactional
     public void deleteUser (Long id) {
        userRepository.deleteById(id);
 
     }
-
 
     @Transactional
     public void update (Long id, User updateuser) {
@@ -73,7 +68,8 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
 
-
 }
+
+
 
 

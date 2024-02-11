@@ -1,8 +1,11 @@
 package ru.itmentor.spring.boot_security.demo.model;
 
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -39,7 +42,8 @@ public class User implements UserDetails, Serializable {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(value = FetchMode.JOIN)
     @Column(name = "roles")
     @JoinTable(
             name = "myroles_people",

@@ -3,6 +3,7 @@ package ru.itmentor.spring.boot_security.demo.model;
 
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public class Role implements GrantedAuthority {
     private String roleName;
 
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @Transient
     private Set<User> users;
 

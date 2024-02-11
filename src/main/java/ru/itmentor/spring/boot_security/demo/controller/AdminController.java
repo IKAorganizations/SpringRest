@@ -1,12 +1,15 @@
 package ru.itmentor.spring.boot_security.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.service.RoleService;
+import ru.itmentor.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.itmentor.spring.boot_security.demo.service.UserService;
 import ru.itmentor.spring.boot_security.demo.service.UserServiceImpl;
 
 import javax.validation.Valid;
@@ -17,12 +20,11 @@ import java.util.Set;
 @RequestMapping ("/admin")
 public class AdminController {
 
-    private  final UserServiceImpl userServiceImpl;
-
+    private final UserService userServiceImpl;
     private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserServiceImpl userServiceImpl, RoleService roleService) {
+    public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleService) {
         this.userServiceImpl = userServiceImpl;
         this.roleService = roleService;
     }
