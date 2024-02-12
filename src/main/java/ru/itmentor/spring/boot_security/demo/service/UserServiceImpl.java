@@ -50,9 +50,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     public void saveUser(User user) {
-        userRepository.save(user);
-
         user.setPassword(NoOpPasswordEncoder.getInstance().encode(user.getPassword()));
+        userRepository.save(user);
     }
 
     @Transactional
